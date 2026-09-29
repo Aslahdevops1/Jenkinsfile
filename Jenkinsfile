@@ -7,6 +7,14 @@ pipeline {
     }
 
     stages {
+        stage('Configure Git') {
+            steps {
+                bat '''
+                    git config --global --add safe.directory "C:/Users/moham/OneDrive/Desktop/New folder/flutter"
+                '''
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 bat '"%FLUTTER_HOME%\\bin\\flutter.bat" pub get'
