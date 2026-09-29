@@ -1,17 +1,12 @@
+
 pipeline {
     agent any
 
-    environment {
-        FLUTTER_HOME = 'C:\\src\\flutter'
-        PATH = "${FLUTTER_HOME}\\bin;${env.PATH}"
-    }
-
     stages {
-
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git'
+                echo 'Using the checked-out repository'
+                bat 'git status'
             }
         }
 
@@ -48,16 +43,15 @@ pipeline {
 
     post {
         success {
-            echo 'Flutter CI/CD pipeline completed successfully!'
+            archiveArtifacts artifacts:
+                'build/app/outputs/flutter-apk/app-release.apk',
+                fingerprint: true
+
+            echo 'Flutter APK build successful!'
         }
 
         failure {
             echo 'Flutter CI/CD pipeline failed!'
-        }
-
-        always {
-            archiveArtifacts artifacts: 'build\\app\\outputs\\flutter-apk\\app-release.apk',
-                             allowEmptyArchive: true
         }
     }
 }
