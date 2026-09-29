@@ -1,37 +1,32 @@
+pipeline {
+    agent any
 
-environment {
-    FLUTTER_HOME = 'C:\\Users\\moham\\OneDrive\\Desktop\\New folder\\flutter'
-    PATH = "${FLUTTER_HOME}\\bin;${env.PATH}"
-}
+    stages {
 
-stages {
-    stage('Flutter Version') {
-        steps {
-            bat 'flutter --version'
+        stage('Install Dependencies') {
+            steps {
+                bat 'git config --global --add safe.directory C:/src/flutter'
+                bat 'flutter pub get'
+            }
         }
-    }
 
-    stage('Install Dependencies') {
-        steps {
-            bat 'flutter pub get'
+        stage('Test') {
+            steps {
+                bat 'flutter test'
+            }
         }
-    }
 
-    stage('Analyze') {
-        steps {
-            bat 'flutter analyze'
+        stage('Build') {
+            steps {
+                bat 'flutter build web'
+            }
         }
-    }
 
-    stage('Test') {
-        steps {
-            bat 'flutter test'
-        }
-    }
-
-    stage('Build APK') {
-        steps {
-            bat 'flutter build apk --release'
+        stage('Archive Web Build') {
+            steps {
+                archiveArtifacts artifacts: 'build\\web\\**',
+                                 fingerprint: true
+            }
         }
     }
 }
